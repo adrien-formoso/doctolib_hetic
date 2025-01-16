@@ -27,6 +27,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+AUTH_USER_MODEL = 'account.User'
+
 
 # Application definition
 
@@ -66,6 +68,12 @@ TEMPLATES = [
             ],
         },
     },
+]
+
+STATIC_URL = 'static/'
+
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
 ]
 
 WSGI_APPLICATION = 'doctolib.wsgi.application'
