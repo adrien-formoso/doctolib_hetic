@@ -22,7 +22,6 @@ class Medecin(models.Model):
     ville = models.CharField(max_length=100)
     code_postal = models.CharField(max_length=5)
     presentation = models.TextField(blank=True)
-    prix_consultation = models.DecimalField(max_digits=6, decimal_places=2)
 
     def __str__(self):
         return f"Dr. {self.user.get_full_name()}"

@@ -86,7 +86,7 @@ class MedecinProfileForm(forms.ModelForm):
     class Meta:
         model = Medecin
         fields = ['numero_rpps', 'adresse', 'ville', 'code_postal', 
-                 'presentation', 'prix_consultation']
+                 'presentation']
         
 class PatientProfileForm(forms.ModelForm):
     class Meta:
