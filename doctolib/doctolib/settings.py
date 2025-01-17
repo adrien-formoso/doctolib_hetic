@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'account',
-    # 'patient',
+    'patient',
     # 'doctor'
 ]
 
@@ -133,4 +133,4 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-LOGIN_REDIRECT_URL = 'redirect_after_login'  # On définit une vue de redirection personnalisée
+LOGIN_REDIRECT_URL = 'redirect_profile'  # On définit une vue de redirection personnalisée

@@ -28,6 +28,10 @@ urlpatterns = [
     path('complete-profile/', 
         views.complete_profile,
         name='complete_profile'),
+
+    path('redirect_profile/', 
+         views.redirect_profile, 
+         name='redirect_profile'),
 ]
 
 # Settings à ajouter dans settings.py

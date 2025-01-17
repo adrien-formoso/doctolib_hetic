@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import login
+from django.contrib.auth import login , authenticate
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
@@ -33,7 +33,6 @@ def register(request):
                     ville='',
                     code_postal='',
                     presentation='',
-                    prix_consultation=0.0
                 )
             else:
                 Patient.objects.create(
@@ -58,11 +57,13 @@ def complete_profile(request):
     if user.role == User.MEDECIN:
         profile = get_object_or_404(Medecin, user=user)
         if profile.numero_rpps:  # Si le profil est déjà complet
-            return redirect('profile')
+            login(request, user)
+            return redirect("doctor:doctor_dashboard")
     else:
         profile = get_object_or_404(Patient, user=user)
         if profile.numero_secu:  # Si le profil est déjà complet
-            return redirect('profile')
+            login(request, user)
+            return redirect("patient:patient_dashboard")
     
     if request.method == 'POST':
         if user.role == User.MEDECIN:
@@ -91,7 +92,8 @@ def complete_profile(request):
             
             profile.save()
             messages.success(request, 'Votre profil a été complété avec succès!')
-            return redirect('profile')
+
+
     else:
         if user.role == User.MEDECIN:
             form = MedecinProfileForm(instance=profile)
@@ -103,16 +105,32 @@ def complete_profile(request):
         'profile': profile
     })
 
+
+def user_login(request):
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            password = form.cleaned_data['password']
+            user = authenticate(username=email, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect('redirect_profile')  # On utilise redirect_profile au lieu de redirect_after_login
+            else:
+                messages.error(request, 'Email ou mot de passe incorrect.')
+    else:
+        form = LoginForm()
+    return render(request, 'login.html', {'form': form})
+
 @login_required
-def profile(request):
+def redirect_profile(request):
     user = request.user
+    # Vérifier si le profil est déjà complet
     if user.role == User.MEDECIN:
         profile = get_object_or_404(Medecin, user=user)
-        template = 'profiles/medecin_profile.html'
+        if profile.numero_rpps:  # Si le profil est déjà complet
+            return redirect("doctor:doctor_dashboard")
     else:
         profile = get_object_or_404(Patient, user=user)
-        template = 'profiles/patient_profile.html'
-        
-    return render(request, template, {
-        'profile': profile
-    })
+        if profile.numero_secu:  # Si le profil est déjà complet
+            return redirect("patient:patient_dashboard")
